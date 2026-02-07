@@ -447,6 +447,6 @@ MIT License - Feel free to use this project as template or reference.
 ---
 
 **Version:** 1.0.0  
-**Last Updated:** February 6, 2024  
-**Author:** AI Generated
+**Last Updated:** February 6, 2026  
+**Author:** Abhishek raj
 
