@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: hrms-lite-backend
+    runtime: python
+    plan: free
+    pythonVersion: 3.11
+    buildCommand: pip install -r requirements.txt && python -c "from database import Base, engine; Base.metadata.create_all(bind=engine)"
+    startCommand: gunicorn -w 1 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000 --timeout 60
+    envVars:
+      - key: DATABASE_URL
+        description: PostgreSQL connection string from Supabase or ElephantSQL (free tier recommended)
+        scope: runtime
+        sync: false
+      - key: FRONTEND_URL
+        description: Your Vercel frontend URL (will be auto-filled after frontend deployment)
+        scope: runtime
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+    region: us-east
+    autoDeploy: false
+    healthCheckPath: /api/health
