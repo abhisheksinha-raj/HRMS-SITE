@@ -1,6 +1,10 @@
 import axios from "axios";
 
-let API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_BASE_URL =
+  import.meta.env.MODE === "production"
+    ? "https://hrms-site.onrender.com"
+    : "http://localhost:8000";
+
 
 // Sanitize common misconfigurations (e.g. ":8000" or "://host:port")
 if (API_BASE_URL.startsWith(":")) {
