@@ -1,24 +1,22 @@
 import axios from "axios";
 
-const API_BASE_URL =
+let API_BASE_URL =
   import.meta.env.MODE === "production"
     ? "https://hrms-site.onrender.com"
     : "http://localhost:8000";
 
-
-// Sanitize common misconfigurations (e.g. ":8000" or "://host:port")
+// Sanitize common misconfigurations
 if (API_BASE_URL.startsWith(":")) {
   API_BASE_URL = `http://localhost${API_BASE_URL}`;
 } else if (API_BASE_URL.startsWith("//")) {
   API_BASE_URL = `http:${API_BASE_URL}`;
 } else if (!/^https?:\/\//i.test(API_BASE_URL)) {
-  // If it's a bare host:port like "localhost:8000", prefix http://
   if (/^[\w.-]+:\d+$/i.test(API_BASE_URL)) {
     API_BASE_URL = `http://${API_BASE_URL}`;
   }
 }
 
-// Remove trailing slash for consistency
+// Remove trailing slash
 API_BASE_URL = API_BASE_URL.replace(/\/$/, "");
 
 // Simple cache implementation
