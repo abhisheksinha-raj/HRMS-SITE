@@ -1,10 +1,18 @@
 import { Users, Camera, Hash, User, Mail, Building, Settings, Trash2, Inbox } from 'lucide-react';
+import { API_BASE_URL } from "../services/api";
 
 export default function EmployeeTable({
   employees,
   isLoading = false,
   onDelete,
 }) {
+  const getPhotoUrl = (photoPath) => {
+    if (!photoPath) return "";
+    if (/^https?:\/\//i.test(photoPath)) return photoPath;
+    const normalized = String(photoPath).replace(/^\//, "");
+    return `${API_BASE_URL}/${normalized}`;
+  };
+
   if (isLoading) {
     return (
       <div className="bg-white p-12 rounded-2xl shadow-lg border border-slate-200 text-center">
@@ -60,7 +68,7 @@ export default function EmployeeTable({
                 <td className="px-6 py-4 whitespace-nowrap">
                   {employee.photo_path ? (
                     <img
-                      src={`http://localhost:8000/${employee.photo_path}`}
+                      src={getPhotoUrl(employee.photo_path)}
                       alt={employee.full_name}
                       className="w-10 h-10 rounded-full object-cover border border-slate-300"
                     />

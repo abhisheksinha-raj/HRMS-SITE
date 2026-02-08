@@ -19,6 +19,8 @@ if (API_BASE_URL.startsWith(":")) {
 // Remove trailing slash
 API_BASE_URL = API_BASE_URL.replace(/\/$/, "");
 
+export { API_BASE_URL };
+
 // Simple cache implementation
 const cache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
