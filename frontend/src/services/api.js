@@ -28,15 +28,30 @@ const isCacheValid = (timestamp) => Date.now() - timestamp < CACHE_DURATION;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: {},
   timeout: 10000, // 10 second timeout
 });
 
 // Add request interceptor for caching
 api.interceptors.request.use(
   (config) => {
+    // Ensure correct Content-Type
+    // - For FormData: let Axios set multipart/form-data with boundary
+    // - For JSON: use application/json
+    const isFormData =
+      typeof FormData !== "undefined" && config.data instanceof FormData;
+    if (isFormData) {
+      if (config.headers) {
+        delete config.headers["Content-Type"];
+        delete config.headers["content-type"];
+      }
+    } else {
+      config.headers = config.headers || {};
+      if (!config.headers["Content-Type"] && !config.headers["content-type"]) {
+        config.headers["Content-Type"] = "application/json";
+      }
+    }
+
     // Skip caching for POST, PUT, DELETE requests
     if (config.method?.toLowerCase() !== 'get') {
       return config;

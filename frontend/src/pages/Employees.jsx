@@ -11,6 +11,23 @@ export default function Employees() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const toErrorMessage = (error, fallback) => {
+    const data = error?.response?.data;
+
+    if (typeof data?.detail === "string") return data.detail;
+    if (Array.isArray(data?.detail)) {
+      // FastAPI 422 validation errors are often an array
+      return data.detail
+        .map((d) => d?.msg)
+        .filter(Boolean)
+        .join(", ") || fallback;
+    }
+    if (typeof data === "string") return data;
+    if (typeof error?.message === "string" && error.message) return error.message;
+
+    return fallback;
+  };
+
   const fetchEmployees = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -62,10 +79,7 @@ export default function Employees() {
       await fetchEmployees();
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
-      const message =
-        error.response?.data?.detail ||
-        "Failed to add employee. Please try again.";
-      setErrorMessage(message);
+      setErrorMessage(toErrorMessage(error, "Failed to add employee. Please try again."));
       console.error("Error adding employee:", error);
     } finally {
       setIsSubmitting(false);
@@ -80,10 +94,7 @@ export default function Employees() {
       await fetchEmployees();
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
-      const message =
-        error.response?.data?.detail ||
-        "Failed to delete employee. Please try again.";
-      setErrorMessage(message);
+      setErrorMessage(toErrorMessage(error, "Failed to delete employee. Please try again."));
       console.error("Error deleting employee:", error);
     }
   };
